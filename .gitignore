@@ -1,0 +1,65 @@
+# Local only project files (never tracked, never pushed)
+CLAUDE.md
+SPEC.md
+STATUS.md
+GETTING-STARTED.md
+future-ideas.md
+agents/
+docs/plan.md
+docs/audits/
+
+# Tooling artifacts
+.claude/
+.claude-plugins/
+.specstory/
+.serena/
+claude-mem*
+*.mem.json
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+.venv/
+venv/
+env/
+.python-version
+*.egg-info/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.ipynb_checkpoints/
+
+# Datasets: never committed. The folder is kept via its tracked README.
+/data/*
+!/data/README.md
+/datasets/
+/features/
+*.npy
+*.mp4
+*.avi
+*.mov
+
+# Model weights and build output: kept out of the repo. Folder kept via its tracked README.
+/models/*
+!/models/README.md
+*.pt
+*.pth
+*.onnx
+*.onnx.data
+*.tflite
+runs/
+wandb/
+mlruns/
+
+# Build and packaging
+build/
+dist/
+*.log
+
+# OS and IDE
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+*.swp
