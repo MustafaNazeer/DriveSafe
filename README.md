@@ -25,7 +25,21 @@ are still ahead.
 
 ## Demo
 
-A live blink and eye closure demo runs on a laptop webcam. Paste:
+A live blink and eye closure demo runs on a laptop webcam. Clone, install, fetch the face
+landmarker model, and run, in one paste.
+
+### Windows PowerShell
+
+```powershell
+git clone https://github.com/MustafaNazeer/DriveSafe
+cd DriveSafe
+uv venv --python 3.13
+uv pip install -e ".[dev]"
+curl.exe -sL -o models\face_landmarker.task https://storage.googleapis.com/mediapipe-models/face_landmarker/face_landmarker/float16/latest/face_landmarker.task
+uv run python -m drivesafe.demo.blink_demo
+```
+
+### Linux and macOS
 
 ```bash
 git clone https://github.com/MustafaNazeer/DriveSafe && cd DriveSafe && \
@@ -37,7 +51,7 @@ uv run python -m drivesafe.demo.blink_demo
 ```
 
 The model file is roughly 4 MB and is deliberately not stored in this repository, so that
-`curl` step is required on every machine. On later runs only the last line is needed:
+download step is required on every machine. On later runs only the last line is needed:
 
 ```bash
 uv run python -m drivesafe.demo.blink_demo
