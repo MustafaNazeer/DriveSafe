@@ -2,20 +2,53 @@
 
 In cabin driver monitoring for real time drowsiness and distraction detection, built to run on edge hardware.
 
-DriveSafe watches a driver through a single cabin camera and raises tiered alerts on the onset of fatigue (eye closure, slow blinks, yawning, head nodding) and distraction (eyes off road, gaze away from the road), before either leads to an incident. It is designed to run on device with no cloud dependency.
+DriveSafe watches a driver through a single cabin camera and raises tiered alerts of fatigue (eye closure, slow blinks, yawning, head nodding) and distraction (eyes off road, gaze away from the road), before either leads to an incident. It is designed to run on device with no cloud dependency, all local
 
 This is a senior design project spanning two semesters (CSE 4316 and CSE 4317) at the University of Texas at Arlington.
 
 ## Approach
 
-The detection pipeline has two stages. A perception stage extracts interpretable per frame signals from facial landmarks: eye closure, yawning, head pose, and gaze direction. A temporal stage fuses those signals over a rolling window to estimate fatigue and distraction, which drive a debounced, tiered alert state machine tuned to fire quickly while keeping false alarms low.
+A perception stage extracts interpretable per frame signals from facial landmarks, such as, eye closure, yawning, head pose, and gaze direction. A temporal stage brings those signals together over a window to estimate fatigue and distraction
 
 Models are trained and evaluated offline on public datasets using subject independent splits, then optimized for real time inference on the target edge device.
 
 ## Data
 
-The datasets used for training and evaluation, and where each one comes from, are documented in [docs/data/datasets.md](docs/data/datasets.md). The raw data is large and is not stored in this repository; see [data/README.md](data/README.md).
+The datasets used for training and evaluation, and where each one comes from, are documented in [docs/data/datasets.md](docs/data/datasets.md). The raw data is large and is not stored in this repository. See [data/README.md](data/README.md)
 
 ## Status
 
-Early development. Project structure is being established.
+Early development / Demo. A live demo detects
+the driver's face, computes the eye aspect ratio from facial landmarks, counts blinks, and
+warns on sustained eye closure. Model training, distraction detection, and edge deployment
+are still ahead.
+
+## Demo
+
+A live blink and eye closure demo runs on a laptop webcam. Paste:
+
+```bash
+git clone https://github.com/MustafaNazeer/DriveSafe && cd DriveSafe && \
+uv venv --python 3.13 && \
+uv pip install -e ".[dev]" && \
+curl -sL -o models/face_landmarker.task \
+  https://storage.googleapis.com/mediapipe-models/face_landmarker/face_landmarker/float16/latest/face_landmarker.task && \
+uv run python -m drivesafe.demo.blink_demo
+```
+
+The model file is roughly 4 MB and is deliberately not stored in this repository, so that
+`curl` step is required on every machine. On later runs only the last line is needed:
+
+```bash
+uv run python -m drivesafe.demo.blink_demo
+```
+
+The overlay draws the six landmarks used for each eye, the live eye aspect ratio, a running
+blink count, and a drowsiness warning once the eyes stay closed for roughly a second. Press
+`q` to quit. The default threshold of 0.21 sits between typical open and closed values, but
+it may need adjusting for a given face, camera, and lighting.
+
+## AI Assistance
+
+Anthropic's Claude was used as a tutoring resource to explain computer vision concepts
+(facial landmarks, eye aspect ratio, blink detection). All code was written by the author.
