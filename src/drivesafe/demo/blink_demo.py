@@ -3,9 +3,24 @@ import cv2
 import mediapipe as mp
 from mediapipe.tasks.python import BaseOptions
 from mediapipe.tasks.python import vision
+from time import monotonic
 
 from drivesafe.perception.blink import BlinkDetector
+from drivesafe.perception.perclos import Perclos
 from drivesafe.perception.landmarks import to_pixel_array, average_eye_aspect_ratio, extract_points, LEFT_EYE_INDICES, RIGHT_EYE_INDICES
+
+# Eye aspect ratio baselines used to convert an EAR reading into a percent
+# closed for PERCLOS. Measured across two runs on one subject (Mustafa) with
+# his webcam under indoor lighting. The median EAR with the eyes open, and the
+# median with them shut. Together they put the P80 closure cutoff at EAR 0.0768.
+#
+# Specific to one face, one camera, one lighting condition. Re-measure if any of
+# those change, and update the Results section of
+# src/drivesafe/perception/perclos-calibration.md to match.
+EAR_OPEN = 0.240
+EAR_CLOSED = 0.036
+WINDOW_SIZE = 15.0
+WINDOW_TOLERANCE = 0.5
 
 # Path to MediaPipe model file on disk
 REPO_ROOT = Path(__file__).resolve().parents[3]
@@ -38,12 +53,17 @@ def main():
     
     # Initilize a BlinkDetector to check if eye is closed, track blinks, and update closed frames / eye state
     detector = BlinkDetector()
+    #Initialize a Perclos to implement a window of the last minute in the demo
+    perclos = Perclos(WINDOW_SIZE, EAR_OPEN, EAR_CLOSED)
 
-
-    frame_index = 0
+    # Write down starting time of demo
+    start = monotonic()
 
     # Frame loop to iterate for every frame
     while True:
+
+        # Write down current time (seconds)
+        now = monotonic()
 
         # Obtain frame, then check to see if the camera is still on for this frame
         ok, frame = cap.read()
@@ -59,14 +79,8 @@ def main():
         # Obtain height and weight of eye
         h, w = frame.shape[:2]
 
-        # Capture the timestamp, in ms, of the frame
-        timestamp_ms = int(frame_index * 1000 / 20)
-
         # Analyze the face on the camera, then label with the timestamp value
-        result = landmarker.detect_for_video(mp_image, timestamp_ms)
-
-        # Iterate for next frame
-        frame_index += 1
+        result = landmarker.detect_for_video(mp_image, int((now - start) * 1000))
 
 
         # Check to see if a face was analyzed / detected
@@ -78,19 +92,24 @@ def main():
             landmarks = to_pixel_array(result.face_landmarks[0], w, h)
             ear = average_eye_aspect_ratio(landmarks)
             detector.update(ear)
+            perclos.update(ear, now)
 
             # Draw the 6 points on the left and right eyes of the face
             for indices in (LEFT_EYE_INDICES, RIGHT_EYE_INDICES):
                 for x, y in extract_points(landmarks, indices):
                     cv2.circle(frame, (int(x), int(y)), 2, (0, 255, 0), -1)
 
-            # Print EAR and blink count to camera
+            # Print EAR, blink count, eye closure percentage, and window fill to camera
             cv2.putText(frame, f"EAR: {ear:.3f}", (20, 40), cv2.FONT_HERSHEY_SIMPLEX, 0.7, (0, 255, 0), 2)
             cv2.putText(frame, f"Blinks: {detector.blink_count}", (20, 70), cv2.FONT_HERSHEY_SIMPLEX, 0.7, (0, 255, 0), 2)
+            cv2.putText(frame, f"Closure Percentage: {perclos.perclos() * 100:.1f}%", (20, 102), cv2.FONT_HERSHEY_SIMPLEX, 0.7, (255, 255, 0), 2)
+
+            if perclos.window_fill() < perclos.window - WINDOW_TOLERANCE:
+                cv2.putText(frame, f"Window Fill: {perclos.window_fill():.1f} seconds", (20, 132), cv2.FONT_HERSHEY_SIMPLEX, 0.7, (255, 255, 0), 2)
             
             # Fire drowsy alarm if BlinkDetector set the detector alarm
             if detector.alarm:
-                cv2.putText(frame, "DROWSY", (20, 110), cv2.FONT_HERSHEY_SIMPLEX, 1.5, (0, 0, 255), 3)
+                cv2.putText(frame, "DROWSY", (20, 190), cv2.FONT_HERSHEY_SIMPLEX, 1.5, (0, 0, 255), 3)
 
         # Display frame to screen
         cv2.imshow("DriveSafe EAR Demo", frame)

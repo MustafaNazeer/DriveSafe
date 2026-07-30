@@ -1,5 +1,6 @@
 from collections import deque
 
+# PERCLOS is the percentage of time within a window that the eyelids cover at least 80 percent of the pupil
 P80_CLOSURE_FRACTION = 0.80
 
 class Perclos:
@@ -24,7 +25,7 @@ class Perclos:
     def is_calibrated(self):
         return self.earOpen is not None and self.earClosed is not None
 
-    # Calculate how closed the eye is within a range of [0,1], 0 = fully closed, 1 = fully open
+    # Calculate how closed the eye is within a range of [0, 1], 0 = fully closed, 1 = fully open
     def closed_ratio(self, ear):
         if self.is_calibrated():
             ratio = (self.earOpen - ear) / (self.earOpen - self.earClosed)
