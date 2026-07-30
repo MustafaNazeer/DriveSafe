@@ -58,11 +58,21 @@ uv run python -m drivesafe.demo.blink_demo
 ```
 
 The overlay draws the six landmarks used for each eye, the live eye aspect ratio, a running
-blink count, and a drowsiness warning once the eyes stay closed for roughly a second. Press
-`q` to quit. The default threshold of 0.21 sits between typical open and closed values, but
-it may need adjusting for a given face, camera, and lighting.
+blink count, and a drowsiness warning once the eyes have stayed closed for `closure_frames`
+consecutive frames (30 by default). That is a frame count rather than a fixed duration, so how
+long it takes depends on the frame rate the pipeline actually achieves. About two seconds at
+the 14.7 fps measured on the development laptop. Press `q` to quit. The default EAR threshold
+of 0.21 sits between typical open and closed values, but it may need adjusting for a given
+face, camera, and lighting. See `src/drivesafe/perception/perclos-calibration.md` for measured
+open and closed values on one face.
 
 ## AI Assistance
 
 Anthropic's Claude was used as a tutoring resource to explain computer vision concepts
-(facial landmarks, eye aspect ratio, blink detection). All code was written by the author.
+(facial landmarks, eye aspect ratio, blink detection). All code in this repository was written
+by the author.
+
+Claude was also used to measure the PERCLOS calibration constants. Claude wrote the throwaway
+measurement instrument, ran it, computed the statistics, and wrote
+`src/drivesafe/perception/perclos-calibration.md`. The measurement instrument is deliberately
+not part of this repository, no source code in this repository was written by Claude.
