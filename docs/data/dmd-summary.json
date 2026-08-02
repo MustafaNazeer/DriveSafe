@@ -1,0 +1,396 @@
+{
+  "dataset": "DMD (Driver Monitoring Dataset)",
+  "source": "Vicomtech, https://dmd.vicomtech.org/; distraction, gaze-hands, and drowsiness bundles for the 14 unrestricted subjects (1,5,6,7,9,10,13,14,23,28,29,33,36,37); RGB only",
+  "license_note": "CC BY-NC-ND 4.0. Attribution to Vicomtech required, non-commercial use only, no distribution of transformed material. Cite the DMD papers per https://dmd.vicomtech.org/. IR, depth, and simulator recordings were withdrawn upstream; nothing may assume DMD IR exists.",
+  "task": "distraction actions, gaze zones, hands-on-wheel, and drowsiness (eye state, blinks, yawns) from frame-interval annotations",
+  "label_note": "annotations are ASAM OpenLABEL JSON per recording; every action type is level/label (e.g. eyes_state/close, gaze_zone/left_mirror, driver_actions/texting_right) with frame intervals. intervals.tsv holds one row per interval, generically parsed with no hardcoded vocabulary; clips.tsv holds one row per video file (face/body/hands/mosaic streams). The drowsiness bundle ships 13 archives: subject 28 has no drowsiness recording upstream.",
+  "generated": "2026-08-01 23:53:44",
+  "subject_independent": true,
+  "train_test_shared_subjects": 0,
+  "split_policy": {
+    "official_split": false,
+    "unit": "subject",
+    "seed": 4316,
+    "train_ratio": 0.8,
+    "val_ratio": 0.0,
+    "test_ratio": 0.2,
+    "rounding": "n_train = floor(n_subjects * train_ratio), in integer arithmetic",
+    "note": "one partition of the 14 unrestricted subjects is shared by all three bundles, so no subject is train in one signal and test in another. Subjects are sorted numerically before the seeded shuffle; without the sort, hash randomization would change the partition every run."
+  },
+  "storage_note": "archives stay gzipped on the exFAT SSD (gzip has no central directory, so member listings cost a full decompress; the one-time streaming pass caches inventories and annotation JSONs under inventory/ and annotations/ beside the archives, and rebuilds never touch the archives again)",
+  "subjects": {
+    "all": [
+      "1",
+      "5",
+      "6",
+      "7",
+      "9",
+      "10",
+      "13",
+      "14",
+      "23",
+      "28",
+      "29",
+      "33",
+      "36",
+      "37"
+    ],
+    "train": [
+      "1",
+      "5",
+      "9",
+      "10",
+      "13",
+      "14",
+      "28",
+      "29",
+      "33",
+      "36",
+      "37"
+    ],
+    "test": [
+      "6",
+      "7",
+      "23"
+    ]
+  },
+  "splits": {
+    "clips": {
+      "total": 308,
+      "train": 228,
+      "test": 80
+    },
+    "intervals": {
+      "total": 18082,
+      "train": 13040,
+      "test": 5042
+    }
+  },
+  "bundles": {
+    "distraction": {
+      "archives": [
+        {
+          "name": "dmd-dataset-distraction-gA-1.tar.gz",
+          "bytes": 5023890890,
+          "sha256": "10a9e55c2187a95ef1b1eccb5eab44b3708f88ef598f60e9f31b53ed95266c62"
+        },
+        {
+          "name": "dmd-dataset-distraction-gA-5.tar.gz",
+          "bytes": 5096396773,
+          "sha256": "5f00d9c1a076935ffab55c749dd2733300d1b8649dd5bfd71d78b456b2b07af0"
+        },
+        {
+          "name": "dmd-dataset-distraction-gB-10.tar.gz",
+          "bytes": 5558446059,
+          "sha256": "9bd3db6c6c890096adfc56cadf2ce064c1a3bd6e18c0ce002e8e784269ae0e54"
+        },
+        {
+          "name": "dmd-dataset-distraction-gB-6.tar.gz",
+          "bytes": 5361070255,
+          "sha256": "82f63a7bdfddef847ac6b7854f64c703404298875bab5c8cbf7485e7a01bfd67"
+        },
+        {
+          "name": "dmd-dataset-distraction-gB-7.tar.gz",
+          "bytes": 5066682486,
+          "sha256": "b93a315e435630d44b913503a800d8cb39208c2294eab38418eb9d32724aaf3f"
+        },
+        {
+          "name": "dmd-dataset-distraction-gB-9.tar.gz",
+          "bytes": 4700871711,
+          "sha256": "06398b3ac12abbb6a304f5f06833189280235af12552a44c2381d95500703caa"
+        },
+        {
+          "name": "dmd-dataset-distraction-gC-13.tar.gz",
+          "bytes": 4771761587,
+          "sha256": "f568952ceab819f26dca47789d418808c9ef047d27dfd756f1babdb283781595"
+        },
+        {
+          "name": "dmd-dataset-distraction-gC-14.tar.gz",
+          "bytes": 4616567262,
+          "sha256": "be5877bc21ce7c8edb827a1355030bb18082968acba4ff7ac14ebac5f2d1aeab"
+        },
+        {
+          "name": "dmd-dataset-distraction-gE-28.tar.gz",
+          "bytes": 4765223355,
+          "sha256": "eaca07e3c36a3663067c4e4da665bb86cdc977e4b5bff577d62274bd7cd34d0b"
+        },
+        {
+          "name": "dmd-dataset-distraction-gE-29.tar.gz",
+          "bytes": 5202048732,
+          "sha256": "df188e622c3744309599b0cc11aba873c9c9031665b3a883fcae78052fd5988d"
+        },
+        {
+          "name": "dmd-dataset-distraction-gF-23.tar.gz",
+          "bytes": 11475027395,
+          "sha256": "55b7952f56fb4f5ce3f28ee6d2cec303dec72164f77b1c63163f81191d6faeef"
+        },
+        {
+          "name": "dmd-dataset-distraction-gZ-33.tar.gz",
+          "bytes": 10430343893,
+          "sha256": "1bd4911d27c54a8638576fea381df9ede84c39418cb238928886d33d703018b4"
+        },
+        {
+          "name": "dmd-dataset-distraction-gZ-36.tar.gz",
+          "bytes": 5597771964,
+          "sha256": "536f71ffa30096e1f4c41f75ef35e4fd6520f7b10c9496ea8111002b115fad86"
+        },
+        {
+          "name": "dmd-dataset-distraction-gZ-37.tar.gz",
+          "bytes": 4882642095,
+          "sha256": "fc5000a5b884ae6f52e5eaf93421ee132a2514356af95816a74ac9371653a73c"
+        }
+      ],
+      "subjects": [
+        "1",
+        "5",
+        "6",
+        "7",
+        "9",
+        "10",
+        "13",
+        "14",
+        "23",
+        "28",
+        "29",
+        "33",
+        "36",
+        "37"
+      ],
+      "videos": 196,
+      "annotation_files": 49,
+      "intervals_per_label": {
+        "driver_actions/change_gear": 5,
+        "driver_actions/drinking": 80,
+        "driver_actions/hair_and_makeup": 71,
+        "driver_actions/phonecall_left": 32,
+        "driver_actions/phonecall_right": 33,
+        "driver_actions/radio": 80,
+        "driver_actions/reach_backseat": 32,
+        "driver_actions/reach_side": 522,
+        "driver_actions/safe_drive": 779,
+        "driver_actions/standstill_or_waiting": 4,
+        "driver_actions/talking_to_passenger": 267,
+        "driver_actions/texting_left": 44,
+        "driver_actions/texting_right": 47,
+        "driver_actions/unclassified": 279,
+        "gaze_on_road/looking_road": 1859,
+        "gaze_on_road/not_looking_road": 1815,
+        "hand_on_gear/hand_on_gear": 15,
+        "hands_using_wheel/both": 533,
+        "hands_using_wheel/none": 109,
+        "hands_using_wheel/only_left": 429,
+        "hands_using_wheel/only_right": 136,
+        "talking/talking": 963
+      }
+    },
+    "drowsiness": {
+      "archives": [
+        {
+          "name": "dmd-dataset-drowsiness-gA-1.tar.gz",
+          "bytes": 828325787,
+          "sha256": "a5b1d475452373e22fd0a99174fdec4ab509d694de6316c2f69b2b28908092b4"
+        },
+        {
+          "name": "dmd-dataset-drowsiness-gA-5.tar.gz",
+          "bytes": 846802206,
+          "sha256": "90a8977c98b9c2407cc0738f6c9cb5bac155b1e4a184a61adcc328ea18b41e17"
+        },
+        {
+          "name": "dmd-dataset-drowsiness-gB-10.tar.gz",
+          "bytes": 1703675121,
+          "sha256": "76f28bffc336965a1f8f553d59edac74acf539eb9dfca80dd3fe589c630288c9"
+        },
+        {
+          "name": "dmd-dataset-drowsiness-gB-6.tar.gz",
+          "bytes": 847656982,
+          "sha256": "6d971dfcebd755fb15453c785a0a4ff6f12d948d7eb220f922d6b96acf2402e8"
+        },
+        {
+          "name": "dmd-dataset-drowsiness-gB-7.tar.gz",
+          "bytes": 860158067,
+          "sha256": "f321eb954c4a4c54225edeb2269b06de96c70256aa796b93b337a92345d85e85"
+        },
+        {
+          "name": "dmd-dataset-drowsiness-gB-9.tar.gz",
+          "bytes": 800050885,
+          "sha256": "e1066f11f762c8eb12adf85b9c09c94291158f52645680fd7444baa52b3e13a7"
+        },
+        {
+          "name": "dmd-dataset-drowsiness-gC-13.tar.gz",
+          "bytes": 843094121,
+          "sha256": "48a7c3c68f70f900df89716519b9f52f9f3ba806d072c817afd45e61f523968f"
+        },
+        {
+          "name": "dmd-dataset-drowsiness-gC-14.tar.gz",
+          "bytes": 859999054,
+          "sha256": "83e7bddb9234f701611f72a8b4e7068bf74a331355cad1962d12f51ba2924a5c"
+        },
+        {
+          "name": "dmd-dataset-drowsiness-gE-29.tar.gz",
+          "bytes": 829261553,
+          "sha256": "d7f6a334b0b9deade21fa84091902b93e6e1b34e2c1dac67e8a11774b6de5874"
+        },
+        {
+          "name": "dmd-dataset-drowsiness-gF-23.tar.gz",
+          "bytes": 1823264438,
+          "sha256": "373d517295e7c5471b217a6a40ee4afa47e379c091320744f4729a6a9b4b7097"
+        },
+        {
+          "name": "dmd-dataset-drowsiness-gZ-33.tar.gz",
+          "bytes": 1675831416,
+          "sha256": "e442b6fc68ceedb6c22f6924db60b37e6d286a0c90fae24c506e33bb5f2890a7"
+        },
+        {
+          "name": "dmd-dataset-drowsiness-gZ-36.tar.gz",
+          "bytes": 829892020,
+          "sha256": "184d0fe0b7aa0264a72cf70e987eb6002e0df02687ec005827e8c586d81f324f"
+        },
+        {
+          "name": "dmd-dataset-drowsiness-gZ-37.tar.gz",
+          "bytes": 785675165,
+          "sha256": "6bb7ead8a9b9c8f8c96e38d3c1472c62f414be263131eaa1ded4ee676c3599d4"
+        }
+      ],
+      "subjects": [
+        "1",
+        "5",
+        "6",
+        "7",
+        "9",
+        "10",
+        "13",
+        "14",
+        "23",
+        "29",
+        "33",
+        "36",
+        "37"
+      ],
+      "videos": 48,
+      "annotation_files": 16,
+      "intervals_per_label": {
+        "blinks/blinking": 1635,
+        "eyes_state/close": 285,
+        "eyes_state/closing": 1936,
+        "eyes_state/open": 1651,
+        "eyes_state/opening": 1936,
+        "eyes_state/undefined": 10,
+        "yawning/Yawning with hand": 38,
+        "yawning/Yawning without hand": 47
+      }
+    },
+    "gaze": {
+      "archives": [
+        {
+          "name": "dmd-dataset-gaze-gA-1.tar.gz",
+          "bytes": 1165400981,
+          "sha256": "c92364ee616f87074c80467be99b796e17e409e329c6f3413d5a9c478d54cf65"
+        },
+        {
+          "name": "dmd-dataset-gaze-gA-5.tar.gz",
+          "bytes": 1340726796,
+          "sha256": "cbdccb4ff79974a2f3c4eaa3de6458cb9c5faa27546713d4d0fad9289df63d4c"
+        },
+        {
+          "name": "dmd-dataset-gaze-gB-10.tar.gz",
+          "bytes": 1206223928,
+          "sha256": "0ff9bc60c68f3a41c69c00ed41e0aab9be431e6419e9ca34c6d0330e71605988"
+        },
+        {
+          "name": "dmd-dataset-gaze-gB-6.tar.gz",
+          "bytes": 1258546265,
+          "sha256": "4723480901f5d4d78aa85ea935ccc99fff9e4ace4d918576504128749826a165"
+        },
+        {
+          "name": "dmd-dataset-gaze-gB-7.tar.gz",
+          "bytes": 1288506578,
+          "sha256": "b4eb903334f22feb4dde2ffcd313a677a622b34e23e9d980398906bfe5b70a2e"
+        },
+        {
+          "name": "dmd-dataset-gaze-gB-9.tar.gz",
+          "bytes": 1244261389,
+          "sha256": "9faefe88cfb16605fc5c7d711fe9c2f015806a1d3063882151047951816aee8a"
+        },
+        {
+          "name": "dmd-dataset-gaze-gC-13.tar.gz",
+          "bytes": 1191278261,
+          "sha256": "860e58f24d3b68c02b6bb82e3af38701902197ff371bbc35f8403955aa383079"
+        },
+        {
+          "name": "dmd-dataset-gaze-gC-14.tar.gz",
+          "bytes": 1457522872,
+          "sha256": "188e462e8d6636e1b3912314cc1339f1330f1c674923fb477667e42f3b8c1981"
+        },
+        {
+          "name": "dmd-dataset-gaze-gE-28.tar.gz",
+          "bytes": 1297295772,
+          "sha256": "fb6191c7b362f43490ae9f3e7e9f74391c95625d883ccb233e146a6adf7f9fbc"
+        },
+        {
+          "name": "dmd-dataset-gaze-gE-29.tar.gz",
+          "bytes": 1280561607,
+          "sha256": "fb52efe5a7229aded8252dd96a22ef2bf3f8272b126ac83e5e00143a2e7a6642"
+        },
+        {
+          "name": "dmd-dataset-gaze-gF-23.tar.gz",
+          "bytes": 2592567623,
+          "sha256": "21b32fe1641bf27d5a36428551a1cbe86984141f89e3bc8b9758b85a64c8d0d0"
+        },
+        {
+          "name": "dmd-dataset-gaze-gZ-33.tar.gz",
+          "bytes": 2616204671,
+          "sha256": "195894c5ac843372edec46856f6286ffb9fd05089d65eaf0be933ad0a2b5555d"
+        },
+        {
+          "name": "dmd-dataset-gaze-gZ-36.tar.gz",
+          "bytes": 1148900717,
+          "sha256": "b64b34987dc3d98ecefbc7406d550041370e5c7bc73596bfd9ba30afe844065f"
+        },
+        {
+          "name": "dmd-dataset-gaze-gZ-37.tar.gz",
+          "bytes": 1153722509,
+          "sha256": "7591ee00fe2e0fe05befbff6804b63c4c9aeaea84b8e1cd0443a29c396116070"
+        }
+      ],
+      "subjects": [
+        "1",
+        "5",
+        "6",
+        "7",
+        "9",
+        "10",
+        "13",
+        "14",
+        "23",
+        "28",
+        "29",
+        "33",
+        "36",
+        "37"
+      ],
+      "videos": 64,
+      "annotation_files": 32,
+      "intervals_per_label": {
+        "blinks/blinking": 1037,
+        "gaze_zone/center_mirror": 21,
+        "gaze_zone/front": 51,
+        "gaze_zone/front_right": 23,
+        "gaze_zone/infotainment": 18,
+        "gaze_zone/left": 16,
+        "gaze_zone/left_mirror": 18,
+        "gaze_zone/not_valid": 17,
+        "gaze_zone/right": 18,
+        "gaze_zone/right_mirror": 19,
+        "gaze_zone/steering_wheel": 24,
+        "hands_on_wheel/both_hands": 148,
+        "hands_on_wheel/none": 81,
+        "hands_on_wheel/only_left": 67,
+        "hands_on_wheel/only_right": 67,
+        "moving_hands/moving": 318,
+        "moving_hands/not_moving": 332,
+        "transition/giving control": 72,
+        "transition/taking control": 63
+      }
+    }
+  }
+}

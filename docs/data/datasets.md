@@ -8,6 +8,8 @@ Where DriveSafe's training and evaluation data comes from. The raw data is not s
 - **UTA-RLDD (Real Life Drowsiness Dataset)** (temporal fatigue labels). Source: the project page at https://sites.google.com/view/utarldd/home, obtained via the Kaggle mirror `rishab260/uta-reallife-drowsiness-dataset` (CC0). Folds 1 to 4, 48 subjects.
 - **YawDD (Yawning Detection Dataset)** (yawn signal). Source: IEEE DataPort, obtained via the Kaggle mirror `enider/yawdd-dataset` (MIT).
 - **DMD (Driver Monitoring Dataset)** (distraction and gaze). Source: Vicomtech, https://dmd.vicomtech.org, academic use. Distraction and Gaze and Hands bundles, unrestricted subjects only.
+- **DGW (Driver Gaze in the Wild)** (gaze zone estimation for the eyes off road signal). Source: LASII Lab, Monash University (Speak2Label / EmotiW), obtained under the EmotiW database EULA. The authors' official train/val split is adopted and is already subject independent: 151
+ train subjects, 82 val subjects, zero overlap. DGW_test is the anonymized challenge holdout with labels withheld, so it is inference only.
 
 ## Pending approval
 

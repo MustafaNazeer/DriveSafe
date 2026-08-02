@@ -1,0 +1,90 @@
+{
+  "dataset": "MRL Eye Dataset",
+  "source": "Media Research Lab, VSB Technical University of Ostrava",
+  "task": "eye state classification, 2 classes (open / closed)",
+  "class_names": {
+    "0": "closed",
+    "1": "open"
+  },
+  "label_note": "labels live in the filename, not in a directory or a label file. Field order is the authors' own, from annotation.txt inside the archive: subjectID_imageNumber_gender_glasses_eyeState_reflections_lighting_sensorID. eyeState 0 = closed, 1 = open. The subject also appears as the parent directory name and the two are asserted to agree on every file.",
+  "generated": "2026-08-01 21:20:26",
+  "subject_independent": true,
+  "train_test_shared_subjects": 0,
+  "split_policy": {
+    "official_split": false,
+    "unit": "subject",
+    "seed": 4316,
+    "train_ratio": 0.8,
+    "val_ratio": 0.0,
+    "test_ratio": 0.2,
+    "rounding": "n_train = floor(n_subjects * train_ratio), in integer arithmetic",
+    "determinism_note": "subjects are sorted into a canonical order before the seeded shuffle. Without the sort, per-process string hash randomization would change the partition on every run despite the fixed seed."
+  },
+  "storage_note": "kept as a tar on the exFAT SSD; extract on ext4 at train time",
+  "archives": [
+    {
+      "name": "mrl-eye.tar",
+      "bytes": 393390080,
+      "sha256": "5829d454b1f84ee0ef878f10ea8a23bacc5cb0da20e38682d7525fc329cf7223"
+    }
+  ],
+  "splits": {
+    "train": {
+      "images": 59715,
+      "subjects": 29,
+      "per_class": {
+        "0": 28920,
+        "1": 30795
+      },
+      "subjects_list": [
+        "s0001",
+        "s0002",
+        "s0003",
+        "s0004",
+        "s0005",
+        "s0006",
+        "s0007",
+        "s0009",
+        "s0011",
+        "s0012",
+        "s0013",
+        "s0015",
+        "s0017",
+        "s0018",
+        "s0019",
+        "s0020",
+        "s0021",
+        "s0022",
+        "s0023",
+        "s0024",
+        "s0026",
+        "s0027",
+        "s0028",
+        "s0029",
+        "s0030",
+        "s0031",
+        "s0032",
+        "s0035",
+        "s0036"
+      ]
+    },
+    "test": {
+      "images": 25183,
+      "subjects": 8,
+      "per_class": {
+        "0": 13026,
+        "1": 12157
+      },
+      "subjects_list": [
+        "s0008",
+        "s0010",
+        "s0014",
+        "s0016",
+        "s0025",
+        "s0033",
+        "s0034",
+        "s0037"
+      ]
+    }
+  }
+}

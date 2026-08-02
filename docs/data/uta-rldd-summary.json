@@ -1,0 +1,133 @@
+{
+  "dataset": "UTA-RLDD (Real Life Drowsiness Dataset)",
+  "source": "UT Arlington, via Kaggle mirror rishab260/uta-reallife-drowsiness-dataset (CC0); folds 1-4 of the authors' 5, 48 of 60 subjects",
+  "task": "temporal fatigue classification, 3 classes (alert / low vigilance / drowsy)",
+  "class_names": {
+    "0": "alert",
+    "5": "low_vigilance",
+    "10": "drowsy"
+  },
+  "label_note": "the class is the filename stem: 0 = alert, 5 = low vigilance, 10 = drowsy. Subject 32's drowsy clip ships as two files (10_1, 10_2); the manifest keeps one row per file with clip_part set on those rows, so the dataset counts 48 subjects, 144 logical clips, 145 files. Extensions are a five way mix (.mov/.MOV/.mp4/.MP4/.m4v); the fold folders are doubly nested (FoldN_partM/FoldN_partM/), both mirror packaging quirks.",
+  "generated": "2026-08-01 22:41:31",
+  "subject_independent": true,
+  "cross_fold_shared_subjects": 0,
+  "split_policy": {
+    "official_split": true,
+    "unit": "subject",
+    "seed": null,
+    "protocol": "leave-one-fold-out cross validation over folds 1-4, the authors' own protocol. The folds partition the 48 subjects into 4 groups of 12; no partition is generated and no seed is involved. Train on three folds, evaluate on the held-out fold, report the mean across the four rounds."
+  },
+  "storage_note": "extracted loose on the exFAT SSD (videos are large, so cluster slack is negligible); the source Kaggle zip was consumed during extraction, so provenance is per file in SHA256SUMS.txt rather than per archive",
+  "files": {
+    "count": 145,
+    "clips": 144,
+    "total_bytes": 96630863141,
+    "per_file_sha256": "SHA256SUMS.txt beside the data on the SSD",
+    "sha256sums_sha256": "6fd7ebcc6bce20d25d2ca6aa2553625cc16fe89dca56a1d0d6c835a75f8ef878"
+  },
+  "splits": {
+    "per_class_clips": {
+      "0": 48,
+      "5": 48,
+      "10": 48
+    },
+    "folds": {
+      "fold1": {
+        "subjects": 12,
+        "files": 36,
+        "clips": 36,
+        "per_class_clips": {
+          "0": 12,
+          "5": 12,
+          "10": 12
+        },
+        "subjects_list": [
+          "01",
+          "02",
+          "03",
+          "04",
+          "05",
+          "06",
+          "07",
+          "08",
+          "09",
+          "10",
+          "11",
+          "12"
+        ]
+      },
+      "fold2": {
+        "subjects": 12,
+        "files": 36,
+        "clips": 36,
+        "per_class_clips": {
+          "0": 12,
+          "5": 12,
+          "10": 12
+        },
+        "subjects_list": [
+          "13",
+          "14",
+          "15",
+          "16",
+          "17",
+          "18",
+          "19",
+          "20",
+          "21",
+          "22",
+          "23",
+          "24"
+        ]
+      },
+      "fold3": {
+        "subjects": 12,
+        "files": 37,
+        "clips": 36,
+        "per_class_clips": {
+          "0": 12,
+          "5": 12,
+          "10": 12
+        },
+        "subjects_list": [
+          "25",
+          "26",
+          "27",
+          "28",
+          "29",
+          "30",
+          "31",
+          "32",
+          "33",
+          "34",
+          "35",
+          "36"
+        ]
+      },
+      "fold4": {
+        "subjects": 12,
+        "files": 36,
+        "clips": 36,
+        "per_class_clips": {
+          "0": 12,
+          "5": 12,
+          "10": 12
+        },
+        "subjects_list": [
+          "37",
+          "38",
+          "39",
+          "40",
+          "41",
+          "42",
+          "43",
+          "44",
+          "45",
+          "46",
+          "47",
+          "48"
+        ]
+      }
+    }
+  }
+}

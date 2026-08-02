@@ -1,0 +1,85 @@
+{
+  "dataset": "YawDD (Yawning Detection Dataset)",
+  "source": "Abtahi, Omidyeganeh, Shirmohammadi, Hariri, ACM MMSys 2014; obtained via Kaggle mirror enider/yawdd-dataset. The mirror's 'MIT' label is not a valid relicense and is ignored; the authors' license governs.",
+  "license_note": "non-commercial research use only. The MMSys 2014 paper must be cited in anything using this data. Screenshot permission is PER VIDEO via a column in Table1.pdf / Table2.pdf beside the data; check it before using any YawDD frame in a report, slide, or publication.",
+  "task": "yawn detection validation (no training split)",
+  "class_names": {
+    "1": "contains yawn",
+    "0": "no yawn",
+    "": "unlabeled dash session"
+  },
+  "label_note": "mirror videos carry one action each: Normal, Talking, Yawning, or Talking&Yawning (13 videos; one lowercase 'yawning' normalized). contains_yawn = 1 for Yawning and Talking&Yawning. Dash videos are whole sessions mixing all actions, unlabeled by design, action left empty. Subject numbering restarts per camera/gender group and the Readme never links dash and mirror numbering, so subjects are namespaced (e.g. mirror-female-01); 119 distinct subjects.",
+  "official_count_note": "the authors' Readme claims 322 mirror videos; the distribution contains 320. The pristine source archive (user06.tar -> 'YawDD dataset.rar') was listed 2026-08-01 and holds exactly the same 349 paths as the extracted tree, so the gap is upstream, not local.",
+  "generated": "2026-08-01 22:50:39",
+  "subject_independent": true,
+  "split_policy": {
+    "official_split": false,
+    "validation_only": true,
+    "unit": "subject",
+    "seed": null,
+    "protocol": "the entire dataset is a held-out validation set for the yawn signal; nothing here is ever trained on. The namespaced subject column exists so any future training use can still prove subject independence."
+  },
+  "storage_note": "extracted loose on the exFAT SSD (videos are large, so cluster slack is negligible); the pristine source archive user06.tar is kept alongside and its contents were verified identical to the extracted tree",
+  "archives": [
+    {
+      "name": "user06.tar",
+      "bytes": 5307791360,
+      "sha256": "fada486e51c5c50567972c0f9593636a52684cf0b7439e6161da5d90007ed40c"
+    }
+  ],
+  "files": {
+    "count": 349,
+    "total_bytes": 5481961996,
+    "per_file_sha256": "SHA256SUMS.txt beside the data on the SSD",
+    "sha256sums_sha256": "14819abcf307a5a8501db592619177484cb27db33fbea5e419de4cf2cc732d61"
+  },
+  "splits": {
+    "validation": {
+      "files": 349,
+      "subjects": 119,
+      "mirror_labeled": 320,
+      "mirror_yawn_positive": 115,
+      "dash_unlabeled_sessions": 29,
+      "groups": {
+        "dash-female": {
+          "files": 13,
+          "subjects": 13,
+          "per_action": {
+            "(unlabeled session)": 13
+          },
+          "yawn_positive": 0
+        },
+        "dash-male": {
+          "files": 16,
+          "subjects": 16,
+          "per_action": {
+            "(unlabeled session)": 16
+          },
+          "yawn_positive": 0
+        },
+        "mirror-female": {
+          "files": 156,
+          "subjects": 43,
+          "per_action": {
+            "Normal": 51,
+            "Talking": 47,
+            "Talking&Yawning": 8,
+            "Yawning": 50
+          },
+          "yawn_positive": 58
+        },
+        "mirror-male": {
+          "files": 164,
+          "subjects": 47,
+          "per_action": {
+            "Normal": 54,
+            "Talking": 53,
+            "Talking&Yawning": 5,
+            "Yawning": 52
+          },
+          "yawn_positive": 57
+        }
+      }
+    }
+  }
+}

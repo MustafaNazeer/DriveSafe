@@ -69,10 +69,14 @@ open and closed values on one face.
 ## AI Assistance
 
 Anthropic's Claude was used as a tutoring resource to explain computer vision concepts
-(facial landmarks, eye aspect ratio, blink detection). All code in this repository was written
-by the author.
+(facial landmarks, eye aspect ratio, blink detection). All code under
+`src/drivesafe/perception/` and `src/drivesafe/demo/` was written by the author.
 
-Claude was also used to measure the PERCLOS calibration constants. Claude wrote the throwaway
-measurement instrument, ran it, computed the statistics, and wrote
-`src/drivesafe/perception/perclos-calibration.md`. The measurement instrument is deliberately
-not part of this repository, no source code in this repository was written by Claude.
+Claude was also used to measure the PERCLOS calibration constants. Claude wrote the
+throwaway measurement instrument, ran it, computed the statistics, and wrote
+`src/drivesafe/perception/perclos-calibration.md`. The measurement instrument is
+deliberately not part of this repository.
+
+The dataset split tooling under `src/drivesafe/data/` was written by Claude to a
+specification written by the author. It builds subject independent split manifests and
+summaries from the dataset archives and is not part of the runtime detection pipeline.
