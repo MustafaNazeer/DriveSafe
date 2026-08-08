@@ -26,8 +26,9 @@ Mustafa Nazeer did the following:
   real wall-clock timestamps rather than assumed frame counts, and a separate `perclos` module
   rather than an extension of `BlinkDetector`.
 - Sat for the measurement and supplied the face being measured.
-- Authors `perclos.py`, its unit tests, and the demo overlay changes. No AI-authored source
-  code is present in this repository.
+- Authors `perclos.py` and the demo overlay changes. No AI-authored source code is present in
+  this repository. (Unit tests for this module were planned as Sprint 4 subtask E-2 and were
+  not written; `tests/` holds only a `.gitkeep`.)
 
 The measurement script itself is deliberately **not** committed. It was a throwaway
 instrument, it is AI-authored, and keeping it out of the tree preserves the authorship claim
@@ -145,8 +146,14 @@ eye closures, so their presence in the open-eye distribution is expected and is 
 | `window_s` | 60.0 | the window length defined in the PERCLOS literature |
 
 These are **provisional defaults only**. They describe one subject, one camera and one lighting
-condition. The demo acquires them at runtime through a keypress calibration step, and the
-runtime values always take precedence over these.
+condition. `blink_demo.py` uses them as hardcoded constants (`EAR_OPEN`, `EAR_CLOSED`); there is
+no runtime calibration step, so the demo stays calibrated for one face until those constants are
+edited. Acquiring the baselines per driver at runtime is future work, and it is limitation 1
+below.
+
+Note on the window: `Perclos` defaults to the 60 s of the literature, but `blink_demo.py`
+overrides it to 15 s (`WINDOW_SIZE`) so the window fills inside a demonstration slot. The
+`window_s` row above is the adopted value for the system, not the value the demo runs at.
 
 ### Two-point versus one-point P80
 
@@ -186,10 +193,10 @@ be restated and re-measured for the Raspberry Pi 5 target, where it may not hold
 Two consequences follow from the 14.7 fps figure:
 
 1. A 60 second window holds roughly 883 samples on this machine.
-2. `blink_demo.py` currently derives its MediaPipe timestamp from a hardcoded 20 fps. At a real
-   14.7 fps that skews MediaPipe's internal timeline by roughly 16 seconds over a 60 second
-   window. The demo should derive its timestamp from the same monotonic clock the PERCLOS
-   tracker uses.
+2. `blink_demo.py` originally derived its MediaPipe timestamp from a hardcoded 20 fps. At a real
+   14.7 fps that skewed MediaPipe's internal timeline by roughly 16 seconds over a 60 second
+   window. **Resolved in commit `5882af0` (2026-07-29):** the demo now derives its timestamp
+   from the same `time.monotonic()` clock the PERCLOS tracker uses.
 
 ## Why the PERCLOS threshold is not the blink threshold
 
@@ -285,8 +292,10 @@ the protocol in the section below rather than expect to find the file.
 These are known and should be carried into the ADS rather than discovered at the Gate Review.
 
 1. **One subject.** All constants come from a single person. Any driver-monitoring system needs
-   per-driver calibration, which is why the demo acquires the baselines at runtime rather than
-   trusting the values in this file.
+   per-driver calibration acquired at runtime, and this demo does not have that yet: it trusts
+   the values in this file. Every PERCLOS figure it reports is therefore only meaningful for the
+   subject these constants were measured on. Building the runtime calibration step is the
+   highest-value change to this module.
 2. **One lighting condition and one camera.** EAR baselines shift with illumination and camera
    distance. The calibration should be repeated under the lighting used for any live
    demonstration.

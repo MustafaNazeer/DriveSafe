@@ -11,10 +11,9 @@ Where DriveSafe's training and evaluation data comes from. The raw data is not s
 - **DGW (Driver Gaze in the Wild)** (gaze zone estimation for the eyes off road signal). Source: LASII Lab, Monash University (Speak2Label / EmotiW), obtained under the EmotiW database EULA. The authors' official train/val split is adopted and is already subject independent: 151
  train subjects, 82 val subjects, zero overlap. DGW_test is the anonymized challenge holdout with labels withheld, so it is inference only.
 
-## Pending approval
+## Dropped
 
-- **DGW (Driver Gaze in the Wild)** (gaze zone estimation for the eyes off road signal). Approved by the authors; access is being arranged.
-- **NTHU-DDD (Driver Drowsiness Detection)** (a recognized drowsiness benchmark). Requires a signed license agreement; in progress.
+- **NTHU-DDD (Driver Drowsiness Detection)** (a recognized drowsiness benchmark). Dropped in Sprint 3 after repeated follow ups on the license signature chain went unanswered. The drowsiness benchmark role is covered by UTA-RLDD and the DMD drowsiness bundle instead.
 
 ## Handling
 
