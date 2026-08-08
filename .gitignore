@@ -63,3 +63,6 @@ Thumbs.db
 .idea/
 .vscode/
 *.swp
+
+# local calibration data
+calibration/
