@@ -62,10 +62,31 @@ The one-point alternative assumes `ear_closed = 0`, reducing the criterion to
 `ear <= 0.2 * ear_open`. That alternative was measured too, and the results are below. It was
 rejected not because it fails on this hardware, but because it leaves far less margin.
 
-Reference for the PERCLOS definition and its validation is the Dinges and Grace work for the
-US Federal Highway Administration (1998), building on earlier work by Wierwille and colleagues.
-**The exact report number for that FHWA publication has not been verified and must be checked
-before this reference is cited in the ADS.**
+The definition and the validation come from two different sources, and it is worth keeping them
+straight. PERCLOS was **defined** by Wierwille and colleagues in a 1994 driving simulator study
+as the proportion of time in a minute that the eyes are at least 80 percent closed, which is
+where both the P80 criterion and the 60 second window used here originate. Dinges and Grace
+then **validated** it for the Federal Highway Administration's Office of Motor Carriers, finding
+PERCLOS "the most reliable and valid determination of a driver's alertness level" among the
+drowsiness detection measures they evaluated.
+
+- D. F. Dinges and R. Grace, "PERCLOS: A Valid Psychophysiological Measure of Alertness As
+  Assessed by Psychomotor Vigilance," Federal Highway Administration, Office of Motor Carriers,
+  TechBrief, Publication No. FHWA-MCRT-98-006, October 1998.
+- W. W. Wierwille, L. A. Ellsworth, S. S. Wreggit, R. J. Fairbanks, and C. L. Kirn, "Research on
+  vehicle-based driver status/performance monitoring: development, validation, and refinement of
+  algorithms for detection of driver drowsiness," National Highway Traffic Safety Administration
+  Final Report DOT HS 808 247, 1994.
+
+Both verified against the primary source on 2026-08-08: the TechBrief PDF in the National
+Transportation Library repository carries the publication number and date on its back page and
+lists the Wierwille report as its sole reference.
+
+One nuance to carry into the drowsiness model. The TechBrief states that PERCLOS "reflects slow
+eyelid closures ('droops') rather than blinks." `perclos.py` counts every sample at or above the
+P80 cutoff, blinks included, so the roughly 6 percent alert baseline measured below is largely
+blink frames rather than droops. Excluding blinks, or weighting by closure duration, is the
+correct next refinement.
 
 ## Measurement protocol
 
@@ -143,7 +164,7 @@ eye closures, so their presence in the open-eye distribution is expected and is 
 | `ear_open` | 0.240 | median of the open-eye phase, both runs |
 | `ear_closed` | 0.036 | median of the closed-eye phase, both runs |
 | P80 cutoff | 0.0768 | derived: `0.2 * 0.240 + 0.8 * 0.036` |
-| `window_s` | 60.0 | the window length defined in the PERCLOS literature |
+| `window_s` | 60.0 | one minute, per the Wierwille et al. (1994) definition |
 
 These are **provisional defaults only**. They describe one subject, one camera and one lighting
 condition. `blink_demo.py` uses them as hardcoded constants (`EAR_OPEN`, `EAR_CLOSED`); there is
@@ -305,7 +326,9 @@ These are known and should be carried into the ADS rather than discovered at the
    Valid at the measured jitter, not valid in general. A time-weighted ratio is the more
    correct implementation and is future work.
 5. **P80 only.** The P70 and other variants in the literature were not evaluated.
-6. **The FHWA reference above is unverified** and must be confirmed before citation.
+6. **Blinks count as closure.** The source literature defines PERCLOS as reflecting slow eyelid
+   droops rather than blinks, but this implementation counts any sample at or above the P80
+   cutoff, so blinks inflate the reported percentage. See the reference note above.
 
 ## Reproducing this measurement
 
