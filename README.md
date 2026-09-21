@@ -18,15 +18,23 @@ The datasets used for training and evaluation, and where each one comes from, ar
 
 ## Status
 
-Early development / Demo. A live demo detects
-the driver's face, computes the eye aspect ratio from facial landmarks, counts blinks, and
-warns on sustained eye closure. Model training, distraction detection, and edge deployment
-are still ahead.
+Early development / Demo.
+
+The current live demo supports both a laptop webcam and a Raspberry Pi 5 with a Raspberry Pi Camera Module 3. The demo detects the driver's face, extracts facial landmarks, computes eye aspect ratio (EAR), counts blinks, tracks eye closure using PERCLOS, and warns on sustained eye closure.
+
+Model training and additional fatigue/distraction features such as yawning, head pose, and gaze detection are still in development.
 
 ## Demo
 
-A live blink and eye closure demo runs on a laptop webcam. Clone, install, fetch the face
-landmarker model, and run, in one paste.
+The live blink and eye-closure demo can run using either:
+
+- a laptop/desktop webcam
+- a Raspberry Pi 5 with a Raspberry Pi Camera Module 3
+
+The camera source is selected using the `--camera` argument:
+
+- `--camera webcam` uses an OpenCV-compatible webcam and is the default.
+- `--camera pi` uses the Raspberry Pi Camera Module through Picamera2.
 
 ### Windows PowerShell
 
@@ -57,6 +65,12 @@ download step is required on every machine. On later runs only the last line is 
 uv run python -m drivesafe.demo.blink_demo
 ```
 
+Select an OpenCV-compatible webcam, use:
+
+```bash
+uv run python -m drivesafe.demo.blink_demo --camera webcam
+```
+
 The overlay draws the six landmarks used for each eye, the live eye aspect ratio, a running
 blink count, and a drowsiness warning once the eyes have stayed closed for `closure_frames`
 consecutive frames (30 by default). That is a frame count rather than a fixed duration, so how
@@ -65,6 +79,31 @@ the 14.7 fps measured on the development laptop. Press `q` to quit. The default 
 of 0.21 sits between typical open and closed values, but it may need adjusting for a given
 face, camera, and lighting. See `src/drivesafe/perception/perclos-calibration.md` for measured
 open and closed values on one face.
+
+### Raspberry Pi 5
+
+The Raspberry Pi version has been tested with:
+
+- Raspberry Pi 5 (8 GB)
+- 64-bit Raspberry Pi OS
+- Raspberry Pi Camera Module 3
+- Picamera2
+- MediaPipe Face Landmarker
+
+Clone the repository:
+
+```bash
+git clone https://github.com/MustafaNazeer/DriveSafe
+cd DriveSafe
+uv venv --python /usr/bin/python3 --system-site-packages
+source .venv/bin/activate
+uv pip install -e ".[dev]"
+curl -fL \
+  -o models/face_landmarker.task \
+  https://storage.googleapis.com/mediapipe-models/face_landmarker/face_landmarker/float16/latest/face_landmarker.task
+python -m drivesafe.demo.blink_demo --camera pi
+```
+
 
 ## AI Assistance
 
@@ -80,3 +119,11 @@ deliberately not part of this repository.
 The dataset split tooling under `src/drivesafe/data/` was written by Claude to a
 specification written by the author. It builds subject independent split manifests and
 summaries from the dataset archives and is not part of the runtime detection pipeline.
+
+### Raspberry Pi 5 Setup and Camera Integration
+
+AI assistance (ChatGPT) was used during the setup and debugging of the Raspberry Pi 5 development environment. This included guidance for configuring 64-bit Raspberry Pi OS, creating the Python virtual environment, installing project dependencies, and verifying the Raspberry Pi Camera Module 3 through Picamera2.
+
+ChatGPT was also used to assist with integrating the Pi camera into the existing blink detection demo. This included adding and debugging the --camera option for selecting either an OpenCV-compatible webcam (--camera webcam) or Raspberry Pi Camera Module (--camera pi), troubleshooting MediaPipe compatibility, verifying RGB/BGR image handling, and testing the MediaPipe Face Landmarker pipeline on the Raspberry Pi 5.
+
+All AI-assisted changes were reviewed and tested on the target hardware before being incorporated into the project.

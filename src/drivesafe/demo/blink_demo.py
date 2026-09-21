@@ -1,6 +1,7 @@
 from pathlib import Path
 import cv2
 import mediapipe as mp
+import argparse
 from mediapipe.tasks.python import BaseOptions
 from mediapipe.tasks.python import vision
 from time import monotonic
@@ -26,8 +27,24 @@ WINDOW_TOLERANCE = 0.5
 REPO_ROOT = Path(__file__).resolve().parents[3]
 MODEL_PATH = REPO_ROOT / "models" / "face_landmarker.task"
 
+# Parser is used to determine whether to run the program on rpi5 or laptop webcam by argument
+def parse_args():
+    parser = argparse.ArgumentParser(
+        description = "DriveSafe blink and drowsiness demo"
+    )
+    parser.add_argument(
+        "--camera",
+        choices=["webcam","pi"],
+        default = "webcam",
+        help="Camera source: webcam for laptop/USB camera, pi for Raspberry Pi Camera Module",
+    )
+    return parser.parse_args()
+
+
 def main():
-    
+    # Sets argument parser
+    args = parse_args()
+
     # Checks to see if face_landmarker.task is on disk
     if not MODEL_PATH.exists():
         print(f"Face landmarker model not found at {MODEL_PATH}")
@@ -44,12 +61,35 @@ def main():
     landmarker = vision.FaceLandmarker.create_from_options(options)
     
     # Open camera
-    cap = cv2.VideoCapture(0)
+    cap = None
+    picam2 = None
 
-    # Check if camera opened / is found
-    if not cap.isOpened():
-        print("No webcam found.")
-        return
+    if args.camera == "webcam":
+        cap = cv2.VideoCapture(0)
+        
+        if not cap.isOpened():
+            print("No webcam found.")
+            return
+
+        print("Using webcam")
+    
+    elif args.camera == "pi":
+        try:
+            from picamera2 import Picamera2
+        except ImportError:
+            print("Picamera2 is not installed or available.")
+            return
+
+        picam2 = Picamera2()
+    
+        camera_config = picam2.create_preview_configuration(
+            main={"size":(640, 480), "format": "RGB888"}
+        )
+
+        picam2.configure(camera_config)
+        picam2.start()
+
+        print("Using Raspberry Pi Camera Module")
     
     # Initilize a BlinkDetector to check if eye is closed, track blinks, and update closed frames / eye state
     detector = BlinkDetector()
@@ -66,12 +106,21 @@ def main():
         now = monotonic()
 
         # Obtain frame, then check to see if the camera is still on for this frame
-        ok, frame = cap.read()
-        if not ok:
-            break
+        if args.camera == "webcam":
+            ok, frame = cap.read()
+  
+            if not ok:
+                break
+            
+            # Webcam/OpenCV provides BGR
+            rgb = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
+        
+        elif args.camera == "pi":
+            #With our tested Pi Camera configuration, this array displays correctly thourgh OpenCV 
+            frame = picam2.capture_array()
 
-        # Convert to RGB color scheme
-        rgb = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
+            # Mediapipe expects RGB
+            rgb = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
 
         # Initialize the MediaPipe image
         mp_image = mp.Image(image_format=mp.ImageFormat.SRGB, data=rgb)
@@ -119,7 +168,10 @@ def main():
             break
 
     # Close camera, then close camera display window
-    cap.release()
+    if cap is not None:
+        cap.release()
+    if picam2 is not None:
+        picam2.stop()
     cv2.destroyAllWindows()
 
 if __name__ == "__main__":
