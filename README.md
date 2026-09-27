@@ -22,6 +22,8 @@ Early development / Demo.
 
 The current live demo supports both a laptop webcam and a Raspberry Pi 5 with a Raspberry Pi Camera Module 3. The demo detects the driver's face, extracts facial landmarks, computes eye aspect ratio (EAR), counts blinks, tracks eye closure using PERCLOS, and warns on sustained eye closure.
 
+An Eye-State (open/closed) Classifier now exists (trained on MRL Eye, ~94% offline accuracy, integrated live)
+
 Model training and additional fatigue/distraction features such as yawning, head pose, and gaze detection are still in development.
 
 ## Demo
@@ -44,6 +46,8 @@ cd DriveSafe
 uv venv --python 3.13
 uv pip install -e ".[dev]"
 curl.exe -sL -o models\face_landmarker.task https://storage.googleapis.com/mediapipe-models/face_landmarker/face_landmarker/float16/latest/face_landmarker.task
+# Download the MRL Eye Dataset from https://mrl.cs.vsb.cz/eyedataset.html and extract into data/mrlEyes_2018_01/
+uv run python -m drivesafe.models.train_eye_state_cnn 
 uv run python -m drivesafe.demo.blink_demo
 ```
 
@@ -54,7 +58,9 @@ git clone https://github.com/MustafaNazeer/DriveSafe && cd DriveSafe && \
 uv venv --python 3.13 && \
 uv pip install -e ".[dev]" && \
 curl -sL -o models/face_landmarker.task \
-  https://storage.googleapis.com/mediapipe-models/face_landmarker/face_landmarker/float16/latest/face_landmarker.task && \
+  https://storage.googleapis.com/mediapipe-models/face_landmarker/face_landmarker/float16/latest/face_landmarker.task
+# Download the MRL Eye Dataset from https://mrl.cs.vsb.cz/eyedataset.html and extract into data/mrlEyes_2018_01/
+uv run python -m drivesafe.models.train_eye_state_cnn && \
 uv run python -m drivesafe.demo.blink_demo
 ```
 

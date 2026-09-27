@@ -6,6 +6,8 @@ from mediapipe.tasks.python import BaseOptions
 from mediapipe.tasks.python import vision
 from time import monotonic
 
+from drivesafe.perception.eye_state import EyeStateClassifier
+
 from drivesafe.perception.blink import BlinkDetector
 from drivesafe.perception.perclos import Perclos
 from drivesafe.perception.landmarks import to_pixel_array, average_eye_aspect_ratio, extract_points, LEFT_EYE_INDICES, RIGHT_EYE_INDICES
@@ -26,6 +28,10 @@ WINDOW_TOLERANCE = 0.5
 # Path to MediaPipe model file on disk
 REPO_ROOT = Path(__file__).resolve().parents[3]
 MODEL_PATH = REPO_ROOT / "models" / "face_landmarker.task"
+
+#Path to the Model
+CNN_MODEL_PATH = REPO_ROOT / "models" / "eye_state_cnn.pt"
+
 
 # Parser is used to determine whether to run the program on rpi5 or laptop webcam by argument
 def parse_args():
@@ -96,6 +102,9 @@ def main():
     #Initialize a Perclos to implement a window of the last minute in the demo
     perclos = Perclos(WINDOW_SIZE, EAR_OPEN, EAR_CLOSED)
 
+    # Load the trained eye state CNN 
+    eye_state_classifier = EyeStateClassifier(CNN_MODEL_PATH)
+
     # Write down starting time of demo
     start = monotonic()
 
@@ -148,10 +157,15 @@ def main():
                 for x, y in extract_points(landmarks, indices):
                     cv2.circle(frame, (int(x), int(y)), 2, (0, 255, 0), -1)
 
+            #CNN eye state classification, using the same landmarks EAR is computed from
+            gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+            cnn_label = eye_state_classifier.predict(gray, landmarks)
+
             # Print EAR, blink count, eye closure percentage, and window fill to camera
             cv2.putText(frame, f"EAR: {ear:.3f}", (20, 40), cv2.FONT_HERSHEY_SIMPLEX, 0.7, (0, 255, 0), 2)
             cv2.putText(frame, f"Blinks: {detector.blink_count}", (20, 70), cv2.FONT_HERSHEY_SIMPLEX, 0.7, (0, 255, 0), 2)
             cv2.putText(frame, f"Closure Percentage: {perclos.perclos() * 100:.1f}%", (20, 102), cv2.FONT_HERSHEY_SIMPLEX, 0.7, (255, 255, 0), 2)
+            cv2.putText(frame, f"Eye State: {cnn_label}", (20, 162), cv2.FONT_HERSHEY_SIMPLEX, 0.7, (255, 0, 255), 2)
 
             if perclos.window_fill() < perclos.window - WINDOW_TOLERANCE:
                 cv2.putText(frame, f"Window Fill: {perclos.window_fill():.1f} seconds", (20, 132), cv2.FONT_HERSHEY_SIMPLEX, 0.7, (255, 255, 0), 2)
