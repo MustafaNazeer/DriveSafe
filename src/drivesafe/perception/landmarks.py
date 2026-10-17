@@ -6,11 +6,12 @@ Finds which vertex number make up each eye, and converts MediaPipe's coordinates
 MediaPipe NOT being imported is intentional, this module is meant to be usable even without a camera
 '''
 import numpy as np
-from drivesafe.perception.geometry import eye_aspect_ratio
+from drivesafe.perception.geometry import eye_aspect_ratio, mouth_aspect_ratio
 
-# MediaPipe FaceMesh eye aspect ratio common convention values for left and right eye indices
+# MediaPipe FaceMesh eye aspect ratio common convention values for left and right eye indices & Mouth indices
 LEFT_EYE_INDICES = (33, 160, 158, 133, 153, 144)
 RIGHT_EYE_INDICES = (362, 385, 387, 263, 373, 380)
+MOUTH_INDICES = (78, 82, 312, 308, 317, 87)
 
 def to_pixel_array(face_landmarks, frame_width, frame_height) -> np.ndarray:
 
@@ -33,3 +34,7 @@ def eye_aspect_ratios(landmarks) -> tuple[float, float]:
 def average_eye_aspect_ratio(landmarks) -> float:
     x, y = eye_aspect_ratios(landmarks)
     return float((x + y) / 2)
+
+def mouth_aspect_ratio_from_landmarks(landmarks) -> float:
+    #Return MAR for the inner lip points
+    return mouth_aspect_ratio(extract_points(landmarks, MOUTH_INDICES))

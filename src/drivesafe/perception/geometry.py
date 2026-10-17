@@ -30,3 +30,28 @@ def eye_aspect_ratio(points: list) -> float:
 
     # EAR calculation
     return float(height / (2 * width))
+
+
+def mouth_aspect_ratio(points: list) -> float:
+    '''
+    Mouth points use the same layout as eye points, on the inner lip:
+           p1      p2
+      p0                p3
+           p5      p4
+    
+    p0 and p3 are the mouth corners, p1/p5 and p2/p4 are the top and bottom lip points directly above and below each other.
+
+    Returns the Mouth Aspect Ratio (MAR): lip opening divided by mouth width
+    '''
+    points = np.asarray(points, dtype=float)
+
+    if points.shape != (6, 2):
+        raise ValueError(f"Expected 6 points, int he form (x,y), instead received shape: {points.shape}")
+
+    height = np.linalg.norm(points[1] - points[5]) + np.linalg.norm(points[2] - points[4])
+    width = np.linalg.norm(points[0] - points[3])
+
+    if width < 1e-9:
+        return 0.0
+
+    return float(height / (2 * width))

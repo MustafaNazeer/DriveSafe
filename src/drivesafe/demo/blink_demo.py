@@ -7,10 +7,11 @@ from mediapipe.tasks.python import vision
 from time import monotonic
 
 from drivesafe.perception.eye_state import EyeStateClassifier
+from drivesafe.perception.yawn import YawnDetector
 
 from drivesafe.perception.blink import BlinkDetector
 from drivesafe.perception.perclos import Perclos
-from drivesafe.perception.landmarks import to_pixel_array, average_eye_aspect_ratio, extract_points, LEFT_EYE_INDICES, RIGHT_EYE_INDICES
+from drivesafe.perception.landmarks import to_pixel_array, average_eye_aspect_ratio, mouth_aspect_ratio_from_landmarks, extract_points, LEFT_EYE_INDICES, RIGHT_EYE_INDICES, MOUTH_INDICES
 
 # Eye aspect ratio baselines used to convert an EAR reading into a percent
 # closed for PERCLOS. Measured across two runs on one subject (Mustafa) with
@@ -102,6 +103,9 @@ def main():
     #Initialize a Perclos to implement a window of the last minute in the demo
     perclos = Perclos(WINDOW_SIZE, EAR_OPEN, EAR_CLOSED)
 
+    #Yawn = MAR above the threshold for a minimum time
+    yawn_detector = YawnDetector()
+
     # Load the trained eye state CNN 
     eye_state_classifier = EyeStateClassifier(CNN_MODEL_PATH)
 
@@ -151,11 +155,17 @@ def main():
             ear = average_eye_aspect_ratio(landmarks)
             detector.update(ear)
             perclos.update(ear, now)
+            mar = mouth_aspect_ratio_from_landmarks(landmarks)
+            yawn_detector.update(mar, now)
 
             # Draw the 6 points on the left and right eyes of the face
             for indices in (LEFT_EYE_INDICES, RIGHT_EYE_INDICES):
                 for x, y in extract_points(landmarks, indices):
                     cv2.circle(frame, (int(x), int(y)), 2, (0, 255, 0), -1)
+
+            #Draw the 6 mouths part
+            for x, y in extract_points(landmarks, MOUTH_INDICES):
+                cv2.circle(frame, (int(x), int(y)), 2, (0, 0, 255), -1)
 
             #CNN eye state classification, using the same landmarks EAR is computed from
             gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
@@ -166,13 +176,19 @@ def main():
             cv2.putText(frame, f"Blinks: {detector.blink_count}", (20, 70), cv2.FONT_HERSHEY_SIMPLEX, 0.7, (0, 255, 0), 2)
             cv2.putText(frame, f"Closure Percentage: {perclos.perclos() * 100:.1f}%", (20, 102), cv2.FONT_HERSHEY_SIMPLEX, 0.7, (255, 255, 0), 2)
             cv2.putText(frame, f"Eye State: {cnn_label}", (20, 162), cv2.FONT_HERSHEY_SIMPLEX, 0.7, (255, 0, 255), 2)
+            cv2.putText(frame, f"MAR: {mar:.3f}", (20, 232), cv2.FONT_HERSHEY_SIMPLEX, 0.7, (0, 165, 255), 2)
+            cv2.putText(frame, f"Yawns: {yawn_detector.yawn_count}", (20,262), cv2.FONT_HERSHEY_COMPLEX, 0.7, (0, 165, 255), 2)
 
             if perclos.window_fill() < perclos.window - WINDOW_TOLERANCE:
                 cv2.putText(frame, f"Window Fill: {perclos.window_fill():.1f} seconds", (20, 132), cv2.FONT_HERSHEY_SIMPLEX, 0.7, (255, 255, 0), 2)
             
             # Fire drowsy alarm if BlinkDetector set the detector alarm
             if detector.alarm:
-                cv2.putText(frame, "DROWSY", (20, 190), cv2.FONT_HERSHEY_SIMPLEX, 1.5, (0, 0, 255), 3)
+                cv2.putText(frame, "DROWSY", (20, h - 50), cv2.FONT_HERSHEY_SIMPLEX, 1.5, (0, 0, 255), 3)
+
+            # Show Yawn while the mouth has stayed open past the minimum duration
+            if yawn_detector.yawning:
+                cv2.putText(frame, "YAWN", (20, 310), cv2.FONT_HERSHEY_SIMPLEX, 1.5, (0, 165, 255), 3)
 
         # Display frame to screen
         cv2.imshow("DriveSafe EAR Demo", frame)
